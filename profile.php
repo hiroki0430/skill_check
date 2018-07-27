@@ -60,7 +60,7 @@
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
 
-  <link rel="stylesheet" type="text/css" href="Home.css">
+  <link rel="stylesheet" type="text/css" href="./css/Home.css">
 
 
   <!-- fontawesome -->
@@ -96,15 +96,14 @@
     </div>
   </nav>
 
-  <div class="container">
+  <div class="container1">
     <div class="row">
       <div class="col-md-12">
         <legend>プロフィール編集</legend>
         <form action="" method="POST" class="form-horizontal" role="form">
           <div class="form-group">
-            <label class="col-md-4 control-label">ニックネーム</label>
-            <div class="col-md-8
-            ">
+            <label class="col-md-3 control-label">ニックネーム</label>
+            <div class="col-md-9">
               <input type="text" name="nickname" class="form-control" value="<?php echo $edit['nickname']; ?>">
               <?php if (isset($error['nickname']) && $error['nickname'] == 'blank') { ?>
                 <p class="alert alert-dismissible alert-danger">入力してください。</p>
@@ -114,9 +113,8 @@
             </div>
           </div>
           <div class="form-group">
-            <label class="col-md-4 control-label">自己紹介</label>
-            <div class="col-md-8
-            ">
+            <label class="col-md-3 control-label">自己紹介</label>
+            <div class="col-md-9">
               <input type="text" name="introduce" class="form-control" value="<?php echo $edit['introduce']; ?>">
               <?php if (isset($error['introduce']) && $error['introduce'] == 'blank') { ?>
                <p class="alert alert-dismissible alert-danger">入力してください。</p>

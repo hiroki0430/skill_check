@@ -1,9 +1,35 @@
+
 <?php
 
     session_start();
     require('dbconnect.php');
 
-    $sql = 'SELECT * FROM `post` WHERE `post_id`';
+    // ページング機能
+      $page = '';
+
+      if (isset($_GET['page'])) {
+        $page = $_GET['page'];
+      }else{
+        $page = 1;
+      }
+      $page = max($page, 1);
+      $page_number = 6;
+// ここでデータをあるだけ取得してる。
+      $page_sql = 'SELECT COUNT(*) AS `page_count` FROM `post` WHERE `created`<NOW()';
+      $page_stmt = $dbh->prepare($page_sql);
+      $page_stmt->execute();
+      $page_count = $page_stmt->fetch(PDO::FETCH_ASSOC);
+
+      // var_dump($page_count);die();
+
+      $all_page_number = ceil($page_count['page_count'] / $page_number);
+
+      $page = min($page, $all_page_number);
+      $start = ($page - 1) * $page_number;
+
+// ここで１ページあたり何件のデータを表示させるかの処理してる。limit どこから？, 何件取得？　＄を''の中に入れると変数展開できないので、外に出してあげよう。
+
+    $sql = 'SELECT * FROM `post` WHERE `post_id` limit '. $start . ', ' . $page_number;
     $stmt = $dbh->prepare($sql);
     $stmt->execute();
     $book_info = array();
@@ -16,32 +42,10 @@
       $books_info[] = $book_info;
       }
 
+
       $count = count($books_info);
 
-      // echo('<pre>');
-      // var_dump($books_info);die();
-      // echo('</pre>');
 
-// ページング機能
-      $page = '';
-
-      if (isset($_GET['page'])) {
-        $page = $_GET['page'];
-      }else{
-        $page = 1;
-      }
-      $page = max($page, 1);
-      $page_number = 6;
-
-      $page_sql = 'SELECT COUNT(*) AS `page_count` FROM `post` WHERE `created`<NOW()';
-      $page_stmt = $dbh->prepare($page_sql);
-      $page_stmt->execute();
-      $page_count = $page_stmt->fetch(PDO::FETCH_ASSOC);
-
-      $all_page_number = ceil($page_count['page_count'] / $page_number);
-
-      $page = min($page, $all_page_number);
-      $start = ($page - 1) * $page_number;
 
 
  ?>
@@ -57,7 +61,7 @@
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
 
-  <link rel="stylesheet" type="text/css" href="Home.css">
+  <link rel="stylesheet" type="text/css" href="./css/Home.css">
 
 
   <!-- fontawesome -->
@@ -94,13 +98,11 @@
       </form>
     </div>
   </nav>
+
   <div class="jumbotron">
-    <img src="pic/IMG_3233.jpg" alt="" width="1500" height="700" >
     <h1 class="display-3"><i class="fas fa-book"></i></h1>
     <p class="lead">あなたのおすすめの本をみんなに紹介しよう。<br>使い方はカンタン！投稿ボタンを押して入力画面に進もう。</p>
   </div>
-
-
 
   <div class="container">
     <div class="row">
@@ -115,33 +117,26 @@
         </div>
       </div>
     <?php } ?>
-  </div>
-</div>
 
-<ul class="paging">
-            <input type="submit" class="btn btn-info" value="つぶやく">
+    <ul class="mx-auto" style="margin-top: 100px;">
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 <!-- 最初のページの時、"前"のボタンを押せないようにする -->
                 <?php if($page == 1) { ?>
-                  <li>前</li>
                 <?php } else { ?>
-                  <li><a href="Home.php?page=<?php echo $page -1; ?>" class="btn btn-default">前</a></li>
+                  <a href="Home.php?page=<?php echo $page -1; ?>" class="btn btn-dark">前</a>
                 <?php } ?>
                 &nbsp;&nbsp;|&nbsp;&nbsp;
                 <!-- 最後のページの時、"次"のボタンを押せないようにする -->
                 <?php if($page == $all_page_number) { ?>
-                  <li>次</li>
+                  次
                 <?php } else {  ?>
-                  <li><a href="Home.php?page=<?php echo $page +1; ?>" class="btn btn-default">次</a></li>
+                  <a href="Home.php?page=<?php echo $page +1; ?>" class="btn btn-dark">次</a>
                 <?php } ?>
                 <!-- 現在のページ / 最大のページ -->
-                <li><?php echo $page; ?> / <?php echo $all_page_number; ?></li>
+                <?php echo $page; ?> / <?php echo $all_page_number; ?>
           </ul>
-
-
-
-
-
+  </div>
+</div>
 
 
 
