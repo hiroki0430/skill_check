@@ -1,7 +1,8 @@
 
 <?php
 
-    session_start();
+    require('function.php');
+    login_check();
     require('dbconnect.php');
 
     // ページング機能
@@ -39,12 +40,38 @@
       if ($book_info == false) {
         break;
       }
-      $books_info[] = $book_info;
-      }
+      // $books_info[] = $book_info;
+      
+// echo "<pre>";
+// var_dump($book_info);die();
+// echo "</pre>";
+
+// $book_info には１件の投稿データが入っている。
 
 
-      $count = count($books_info);
+// like数を取得
+    $like_sql = 'SELECT COUNT(*) as `like_count` FROM `likes` WHERE `post_id`=?';
+    $like_data = array($book_info['post_id']);
+    $like_stmt = $dbh->prepare($like_sql);
+    $like_stmt->execute($like_data);
+    $like_count = $like_stmt->fetch(PDO::FETCH_ASSOC);
 
+// var_dump($like_count); die;
+
+    $book_info['like_count'] = $like_count['like_count'];
+
+    $login_like_sql = 'SELECT COUNT(*) as `login_count` FROM `likes` WHERE `member_id`= ? AND `post_id`=?';
+    $login_like_data = array($_SESSION['id'],$book_info['post_id']);
+    $login_like_stmt = $dbh->prepare($login_like_sql);
+    $login_like_stmt->execute($login_like_data);
+
+    $login_like_number = $login_like_stmt->fetch(PDO::FETCH_ASSOC);
+
+    $book_info['login_like_flag'] = $login_like_number['login_count'];
+
+    $book_info_list[] = $book_info;
+
+}
 
 
 
@@ -93,9 +120,11 @@
           <a class="nav-link" href="profile.php">プロフィール編集</a>
         </li>
       </ul>
-      <form class="form-inline my-2 my-lg-0">
-        <a class="nav-link" href="logout.php">ログアウト</a>
-      </form>
+      <form class="form-inline my-2 my-lg-0" method="GET" action="search.php" >
+      <input class="form-control mr-sm-2" type="search" aria-label="Search" name="search_key">
+      <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Search</button>
+    </form>
+    <a class="nav-link" href="logout.php">ログアウト</a>
     </div>
   </nav>
 
@@ -106,16 +135,23 @@
 
   <div class="container">
     <div class="row">
-      <?php for ($i=0; $i < count($books_info); $i++) { ?>
+      <?php foreach ($book_info_list as $one_book_info) { ?>
         <div class="col-sm-4">
          <div class="card" style="width: 18rem;">
-          <img class="card-img-top" src="picture/<?php echo $books_info[$i]['post_pic'];?>" >
+          <img class="card-img-top" src="picture/<?php echo $one_book_info['post_pic'];?>" >
           <div class="card-body">
-            <h5 class="card-title"><?php echo $books_info[$i]['post_name']; ?></h5>
-            <a href="detail.php?detail_button=<?php echo $books_info[$i]['post_id'] ?>" class="btn btn-dark">詳細をみる</a>
+            <h5 class="card-title"><?php echo $one_book_info['post_name']; ?></h5>
+            <a href="detail.php?detail_button=<?php echo $one_book_info['post_id'] ?>" class="btn btn-dark">詳細をみる</a>
+            <?php if ($one_book_info['login_like_flag'] == 0) { ?>
+            <a href="like.php?like_book_id=<?php echo $one_book_info['post_id'] ?>&page=<?php echo $page; ?>" class="btn btn-primary"><i class="fas fa-bell"></i></a>
+            <?php } else { ?>
+            <a href="like.php?unlike_book_id=<?php echo $one_book_info['post_id'] ?>&page=<?php echo $page; ?>" class="btn btn-danger"><i class="fas fa-bell-slash"></i></a>
+            <?php } ?>
+            <span><i class="fas fa-map-marker-smile"></i><br>いいね：<?php echo $one_book_info['like_count'] ?></span>
           </div>
         </div>
       </div>
+
     <?php } ?>
 
     <ul class="mx-auto" style="margin-top: 100px;">

@@ -61,36 +61,34 @@
   <nav class="navbar navbar-dark bg-dark">
     <span class="navbar-brand md-0 h1" style="font-size: 30px;"><i class="fas fa-anchor"></i>   My Book</span>
   </nav>
+  <div class="login">
   <div class="container">
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-md-6">
         <form method="POST">
-          <legend>ログイン</legend>
+          <legend class="sign">Sign up</legend>
           <div class="form-group">
-            <label for="exampleInputEmail1">ニックネーム</label>
-            <input type="text" class="form-control" id="exampleInputEmail1" name="nickname">
+            <input type="text" class="form-control" placeholder="What's your nickname?" name="nickname">
           </div>
-
-          <div class="form-group">
-            <label for="exampleTextarea">パスワード</label>
-            <input class="form-control" type="password" name="password">
+          <div class="form">
+            <input class="form-control" type="password" name="password" placeholder="what's your password??">
           </div>
           <?php if(isset($error['login']) && $error['login'] == 'failed') { ?>
             <p class="alert alert-dismissible alert-danger"> ニックネームかパスワードが間違っています。</p>
           <?php } ?>
-          <div class="form-group">
+          <div class="form">
+            <input type="checkbox" name="save" value="on">
             <label class="col-sm-4 control-label">自動ログイン</label>
-            <div class="col-sm-8">
-              <input type="checkbox" name="save" value="on">オンにする
-            </div>
           </div>
-          <fieldset class="form-group">
+          <fieldset class="form">
             <button type="submit" class="btn btn-dark">ログイン</button>
           </fieldset>
         </form>
       </div>
     </div>
   </div>
+  </div>
+
 
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

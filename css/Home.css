@@ -34,3 +34,18 @@
   margin-top: 50px;
 }
 
+.login{
+  text-align: center;
+  padding-left: 450px;
+}
+
+.sign{
+  font-size: 70px;
+  font-family: arial black;
+  padding-bottom: 25px;
+}
+
+.form{
+  padding-top: 25px;
+}
+
